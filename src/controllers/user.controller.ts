@@ -16,15 +16,47 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
+import {AuthService} from '../services/auth.service';
+
+class Credentials {
+  username: string;
+  password: string;
+}
 
 export class UserController {
+
+  authService: AuthService;
+
   constructor(
     @repository(UserRepository)
-    public userRepository : UserRepository,
-  ) {}
+    public userRepository: UserRepository,
+  ) {
+    this.authService = new AuthService(this.userRepository);
+  }
+
+  @post('/login', {
+    responses: {
+      '200': {
+        description: 'Login for users'
+      }
+    }
+  })
+  async login(
+    @requestBody() credentials: Credentials
+  ): Promise<object> {
+    let user = await this.authService.Identify(credentials.username, credentials.password);
+    if (user) {
+      return {
+        data: user
+      }
+    } else {
+      throw new HttpErrors[401]('Invalid');
+    }
+  }
 
   @post('/users')
   @response(200, {
