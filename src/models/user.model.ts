@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Message} from './message.model';
 
 @model()
 export class User extends Entity {
@@ -12,6 +13,9 @@ export class User extends Entity {
   @property({
     type: 'string',
     required: true,
+    index: {
+      unique: true,
+    }
   })
   username: string;
 
@@ -21,6 +25,8 @@ export class User extends Entity {
   })
   password: string;
 
+  @hasMany(() => Message, {keyTo: 'senderId'})
+  messages: Message[];
 
   constructor(data?: Partial<User>) {
     super(data);

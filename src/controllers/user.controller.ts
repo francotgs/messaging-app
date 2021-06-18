@@ -41,12 +41,22 @@ export class UserController {
   @post('/login', {
     responses: {
       '200': {
-        description: 'Login for users'
+        description: 'Login for users',
+        content: {'application/json': {schema: getModelSchemaRef(User)}},
       }
     }
   })
   async login(
-    @requestBody() credentials: Credentials
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(User, {
+            exclude: ['id'],
+          }),
+        },
+      },
+    })
+    credentials: Credentials
   ): Promise<object> {
     let user = await this.authService.Identify(credentials.username, credentials.password);
     if (user) {
@@ -54,7 +64,7 @@ export class UserController {
         data: user
       }
     } else {
-      throw new HttpErrors[401]('Invalid');
+      throw new HttpErrors[401]('Invalid user or password');
     }
   }
 
@@ -102,10 +112,24 @@ export class UserController {
       },
     },
   })
-  async find(
-    @param.filter(User) filter?: Filter<User>,
-  ): Promise<User[]> {
-    return this.userRepository.find(filter);
+  async find(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
+  @get('/usernames')
+  @response(200, {
+    description: 'Array of User model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(User, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findByUsername(): Promise<User[]> {
+    return this.userRepository.find(this.userRepository.filterUsers());
   }
 
   @patch('/users')
