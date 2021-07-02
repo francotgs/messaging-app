@@ -23,6 +23,7 @@ export class UserRepository extends DefaultCrudRepository<
     return {
       fields: {
         username:true,
+        id: true
       }
     }
   }
