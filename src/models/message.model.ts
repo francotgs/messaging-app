@@ -28,6 +28,11 @@ export class Message extends Entity {
   })
   date?: string;
 
+  @property({
+    type: 'boolean',
+  })
+  isfile?: boolean;
+
   @belongsTo(() => User, {name: 'user'})
   senderId: number;
 

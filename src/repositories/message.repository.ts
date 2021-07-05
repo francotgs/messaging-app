@@ -26,6 +26,7 @@ export class MessageRepository extends DefaultCrudRepository<
         receiverId:true,
         content:true,
         date:true,
+        isfile: true,
       },
       where: {
         or: [
