@@ -22,7 +22,12 @@ COPY --chown=node . .
 RUN npm run build
 
 # Bind to all network interfaces so that it can be mapped to the host OS
-ENV HOST=0.0.0.0 PORT=3000
+ENV HOST=0.0.0.0 PORT=3001
+ENV MYSQL_HOST=localhost
+ENV MYSQL_PORT=3306
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=pass
+ENV MYSQL_DATABASE=demo
 
 EXPOSE ${PORT}
 CMD [ "node", "." ]

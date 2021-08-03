@@ -41,7 +41,7 @@ export class CargaArchivoController {
     const rutaImagen = path.join(__dirname, llaves.carpetaImagen);
     let res = await this.StoreFileToPath(rutaImagen, llaves.nombreCampoImagen, request, response, llaves.extensionesPermitidasIMG);
     if (res) {
-      const nombre_archivo = response.req?.file.filename;
+      const nombre_archivo = response.req?.file?.filename;
       if (nombre_archivo) {
         return {filename: nombre_archivo};
       }
